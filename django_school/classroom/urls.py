@@ -1,8 +1,12 @@
 from django.urls import include, path
+from rest_framework import routers
+from .views import classroom, students, teachers, quizes
 
-from .views import classroom, students, teachers
+router = routers.DefaultRouter()
+router.register(r'quizes', quizes.QuizViewSet)
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('', classroom.home, name='home'),
 
     path('students/', include(([
@@ -24,4 +28,6 @@ urlpatterns = [
         path('quiz/<int:quiz_pk>/question/<int:question_pk>/', teachers.question_change, name='question_change'),
         path('quiz/<int:quiz_pk>/question/<int:question_pk>/delete/', teachers.QuestionDeleteView.as_view(), name='question_delete'),
     ], 'classroom'), namespace='teachers')),
+
+    path('api/', include('rest_framework.urls', namespace='rest_framework'))
 ]
